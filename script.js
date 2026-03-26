@@ -7,10 +7,15 @@ let hasMore = true;
 let gamesMap = new Map();
 
 const gameGrid = document.getElementById("game-grid");
+const mainSpinner = document.getElementById("main-spinner");
 
 async function fetchGames() {
     if (isLoading || !hasMore) return;
     isLoading = true;
+
+    if (currentPage === 1) {
+        mainSpinner.classList.remove("hidden");
+    }
 
     try {
         let url = `${BASE_URL}?key=${API_KEY}&page=${currentPage}&page_size=20`;
@@ -31,6 +36,7 @@ async function fetchGames() {
         console.error(error);
     } finally {
         isLoading = false;
+        mainSpinner.classList.add("hidden");
     }
 }
 

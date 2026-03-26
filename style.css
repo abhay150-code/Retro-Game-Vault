@@ -88,6 +88,41 @@ h1, h2, h3, h4, .neon-text {
     min-height: calc(100vh - 70px);
 }
 
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--text-secondary);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+#search-spinner {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.main-loader {
+    width: 40px;
+    height: 40px;
+    margin: 2rem auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes spin-centered {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+#search-spinner {
+    animation: spin-centered 1s linear infinite;
+}
+
 .main-content {
     flex: 1;
     padding: 2rem;
