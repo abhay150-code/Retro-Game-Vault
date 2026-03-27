@@ -1,24 +1,45 @@
 const API_KEY = "657a6ddfe7f74d1e97d443c883c67e9e";
 const BASE_URL = "https://api.rawg.io/api/games";
 
+let currentSearch = "";
 let currentPage = 1;
 let isLoading = false;
 let hasMore = true;
 let gamesMap = new Map();
 
+const searchInput = document.getElementById("search-input");
+const searchSpinner = document.getElementById("search-spinner");
 const gameGrid = document.getElementById("game-grid");
 const mainSpinner = document.getElementById("main-spinner");
 
-async function fetchGames() {
-    if (isLoading || !hasMore) return;
+function debounce(func, delay) {
+    let timeout;
+    return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func(...args), delay);
+    };
+}
+
+async function fetchGames(reset = false) {
+    if (isLoading || (!hasMore && !reset)) return;
     isLoading = true;
 
+    if (reset) {
+        currentPage = 1;
+        gameGrid.innerHTML = "";
+        gamesMap.clear();
+        hasMore = true;
+    }
+
     if (currentPage === 1) {
-        mainSpinner.classList.remove("hidden");
+        if (currentSearch) searchSpinner.classList.remove("hidden");
+        else mainSpinner.classList.remove("hidden");
     }
 
     try {
         let url = `${BASE_URL}?key=${API_KEY}&page=${currentPage}&page_size=20`;
+        if (currentSearch) url += `&search=${encodeURIComponent(currentSearch)}`;
+
         const response = await fetch(url);
         const data = await response.json();
 
@@ -36,6 +57,7 @@ async function fetchGames() {
         console.error(error);
     } finally {
         isLoading = false;
+        searchSpinner.classList.add("hidden");
         mainSpinner.classList.add("hidden");
     }
 }
@@ -62,5 +84,12 @@ function renderGameCard(game) {
     
     gameGrid.appendChild(card);
 }
+
+const handleSearch = debounce((e) => {
+    currentSearch = e.target.value;
+    fetchGames(true);
+}, 500);
+
+searchInput.addEventListener("input", handleSearch);
 
 fetchGames();
