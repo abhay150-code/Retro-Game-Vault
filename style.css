@@ -191,3 +191,8 @@ h1, h2, h3, h4, .neon-text {
     font-size: 0.9rem;
     color: var(--text-secondary);
 }
+
+.observer-target {
+    height: 20px;
+    margin-top: 20px;
+}

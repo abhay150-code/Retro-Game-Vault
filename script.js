@@ -11,6 +11,7 @@ const searchInput = document.getElementById("search-input");
 const searchSpinner = document.getElementById("search-spinner");
 const gameGrid = document.getElementById("game-grid");
 const mainSpinner = document.getElementById("main-spinner");
+const observerTarget = document.getElementById("observer-target");
 
 function debounce(func, delay) {
     let timeout;
@@ -91,5 +92,12 @@ const handleSearch = debounce((e) => {
 }, 500);
 
 searchInput.addEventListener("input", handleSearch);
+
+const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+        fetchGames();
+    }
+}, { rootMargin: '100px' });
+observer.observe(observerTarget);
 
 fetchGames();
