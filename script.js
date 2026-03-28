@@ -13,6 +13,16 @@ const gameGrid = document.getElementById("game-grid");
 const mainSpinner = document.getElementById("main-spinner");
 const observerTarget = document.getElementById("observer-target");
 
+const gameModal = document.getElementById("game-modal");
+const closeModal = document.getElementById("close-modal");
+const modalImage = document.getElementById("modal-image");
+const modalTitle = document.getElementById("modal-title");
+const modalRating = document.getElementById("modal-rating");
+const modalDate = document.getElementById("modal-date");
+const modalGenres = document.getElementById("modal-genres");
+const modalDescription = document.getElementById("modal-description");
+const modalScreenshots = document.getElementById("modal-screenshots");
+
 function debounce(func, delay) {
     let timeout;
     return (...args) => {
@@ -82,9 +92,43 @@ function renderGameCard(game) {
             </div>
         </div>
     `;
+
+    card.addEventListener("click", () => openModal(game.id));
     
     gameGrid.appendChild(card);
 }
+
+async function openModal(id) {
+    try {
+        const response = await fetch(`${BASE_URL}/${id}?key=${API_KEY}`);
+        const game = await response.json();
+        
+        modalImage.src = game.background_image || "https://via.placeholder.com/600x400?text=No+Image";
+        modalTitle.textContent = game.name;
+        modalRating.textContent = `⭐ ${game.rating || 'N/A'}`;
+        modalDate.textContent = `📅 ${game.released || 'N/A'}`;
+        
+        modalGenres.innerHTML = game.genres.map(g => `<span class="genre-tag">${g.name}</span>`).join("");
+        modalDescription.innerHTML = game.description || "No description available.";
+        
+        const cachedGame = gamesMap.get(id);
+        modalScreenshots.innerHTML = "";
+        if (cachedGame && cachedGame.short_screenshots) {
+            modalScreenshots.innerHTML = cachedGame.short_screenshots.map(s => 
+                `<img src="${s.image}" alt="Screenshot" loading="lazy">`
+            ).join("");
+        }
+        
+        gameModal.classList.remove("hidden");
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+closeModal.addEventListener("click", () => gameModal.classList.add("hidden"));
+gameModal.addEventListener("click", (e) => {
+    if (e.target === gameModal) gameModal.classList.add("hidden");
+});
 
 const handleSearch = debounce((e) => {
     currentSearch = e.target.value;

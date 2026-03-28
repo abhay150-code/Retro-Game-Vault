@@ -26,6 +26,31 @@
         </main>
     </div>
 
+    <!-- Modals -->
+    <div id="game-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button id="close-modal" class="close-btn">&times;</button>
+            <div class="modal-header">
+                <img id="modal-image" src="" alt="Game Poster" class="backdrop">
+                <div class="modal-title-info">
+                    <h2 id="modal-title"></h2>
+                    <div class="modal-meta">
+                        <span id="modal-rating" class="badge"></span>
+                        <span id="modal-date" class="badge"></span>
+                    </div>
+                    <div id="modal-genres" class="genres"></div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <p id="modal-description"></p>
+                <div class="screenshots-container">
+                    <h3>Screenshots</h3>
+                    <div id="modal-screenshots" class="screenshots-grid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
