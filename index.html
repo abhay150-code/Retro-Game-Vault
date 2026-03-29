@@ -19,6 +19,13 @@
     </header>
 
     <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h2>Favorites</h2>
+                <div id="favorites-list" class="favorites-list"></div>
+            </div>
+        </aside>
+
         <main class="main-content">
             <div id="game-grid" class="game-grid"></div>
             <div id="main-spinner" class="spinner main-loader hidden"></div>
@@ -40,6 +47,7 @@
                     </div>
                     <div id="modal-genres" class="genres"></div>
                 </div>
+                <button id="modal-favorite-btn" class="fav-icon-btn">★</button>
             </div>
             <div class="modal-body">
                 <p id="modal-description"></p>

@@ -13,6 +13,9 @@ const gameGrid = document.getElementById("game-grid");
 const mainSpinner = document.getElementById("main-spinner");
 const observerTarget = document.getElementById("observer-target");
 
+let favorites = JSON.parse(localStorage.getItem("retro_vault_favs")) || [];
+
+const favoritesList = document.getElementById("favorites-list");
 const gameModal = document.getElementById("game-modal");
 const closeModal = document.getElementById("close-modal");
 const modalImage = document.getElementById("modal-image");
@@ -22,6 +25,7 @@ const modalDate = document.getElementById("modal-date");
 const modalGenres = document.getElementById("modal-genres");
 const modalDescription = document.getElementById("modal-description");
 const modalScreenshots = document.getElementById("modal-screenshots");
+const modalFavBtn = document.getElementById("modal-favorite-btn");
 
 function debounce(func, delay) {
     let timeout;
@@ -79,10 +83,14 @@ function renderGameCard(game) {
     
     const imgUrl = game.background_image || "https://via.placeholder.com/600x400?text=No+Image";
     const date = game.released ? new Date(game.released).getFullYear() : "N/A";
+    const isFav = favorites.find(f => f.id === game.id);
 
     card.innerHTML = `
         <div class="game-card-img-container">
             <img src="${imgUrl}" alt="${game.name}" class="poster" loading="lazy">
+            <div class="card-actions">
+                <button class="icon-btn fav ${isFav ? 'active' : ''}" data-id="${game.id}">★</button>
+            </div>
         </div>
         <div class="game-card-content">
             <h3 class="game-card-title">${game.name}</h3>
@@ -93,7 +101,17 @@ function renderGameCard(game) {
         </div>
     `;
 
-    card.addEventListener("click", () => openModal(game.id));
+    card.addEventListener("click", (e) => {
+        if (e.target.closest(".icon-btn")) return;
+        openModal(game.id);
+    });
+
+    const favBtn = card.querySelector(".fav");
+    favBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleFavorite(game);
+        favBtn.classList.toggle("active");
+    });
     
     gameGrid.appendChild(card);
 }
@@ -110,6 +128,14 @@ async function openModal(id) {
         
         modalGenres.innerHTML = game.genres.map(g => `<span class="genre-tag">${g.name}</span>`).join("");
         modalDescription.innerHTML = game.description || "No description available.";
+        
+        const isFav = favorites.find(f => f.id === game.id);
+        modalFavBtn.classList.toggle("active", Boolean(isFav));
+        modalFavBtn.onclick = () => {
+            toggleFavorite(game);
+            modalFavBtn.classList.toggle("active");
+            updateGridButtons();
+        };
         
         const cachedGame = gamesMap.get(id);
         modalScreenshots.innerHTML = "";
@@ -130,6 +156,54 @@ gameModal.addEventListener("click", (e) => {
     if (e.target === gameModal) gameModal.classList.add("hidden");
 });
 
+function toggleFavorite(game) {
+    const idx = favorites.findIndex(f => f.id === game.id);
+    if (idx > -1) {
+        favorites.splice(idx, 1);
+    } else {
+        favorites.push({
+            id: game.id,
+            name: game.name,
+            background_image: game.background_image
+        });
+    }
+    localStorage.setItem("retro_vault_favs", JSON.stringify(favorites));
+    renderFavorites();
+}
+
+function renderFavorites() {
+    favoritesList.innerHTML = "";
+    favorites.forEach(fav => {
+        const div = document.createElement("div");
+        div.className = "fav-item";
+        div.innerHTML = `
+            <img src="${fav.background_image || 'https://via.placeholder.com/40'}" alt="${fav.name}">
+            <span class="fav-item-title">${fav.name}</span>
+            <button class="remove-fav-btn" data-id="${fav.id}">&times;</button>
+        `;
+        div.addEventListener("click", (e) => {
+            if (e.target.classList.contains("remove-fav-btn")) return;
+            openModal(fav.id);
+        });
+        div.querySelector(".remove-fav-btn").addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleFavorite(fav);
+            updateGridButtons();
+        });
+        favoritesList.appendChild(div);
+    });
+}
+
+function updateGridButtons() {
+    document.querySelectorAll(".game-card").forEach(card => {
+        const favBtn = card.querySelector(".fav");
+        if (!favBtn) return;
+        const id = parseInt(favBtn.dataset.id);
+        const isFav = favorites.find(f => f.id === id);
+        favBtn.classList.toggle("active", Boolean(isFav));
+    });
+}
+
 const handleSearch = debounce((e) => {
     currentSearch = e.target.value;
     fetchGames(true);
@@ -144,4 +218,5 @@ const observer = new IntersectionObserver((entries) => {
 }, { rootMargin: '100px' });
 observer.observe(observerTarget);
 
+renderFavorites();
 fetchGames();
