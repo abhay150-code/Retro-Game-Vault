@@ -14,8 +14,15 @@ const mainSpinner = document.getElementById("main-spinner");
 const observerTarget = document.getElementById("observer-target");
 
 let favorites = JSON.parse(localStorage.getItem("retro_vault_favs")) || [];
+let compareList = [];
 
 const favoritesList = document.getElementById("favorites-list");
+const compareSlots = document.getElementById("compare-slots");
+const compareBtn = document.getElementById("compare-btn");
+const clearCompareBtn = document.getElementById("clear-compare-btn");
+const compareModal = document.getElementById("compare-modal");
+const closeCompareModal = document.getElementById("close-compare-modal");
+const compareResults = document.getElementById("compare-results");
 const gameModal = document.getElementById("game-modal");
 const closeModal = document.getElementById("close-modal");
 const modalImage = document.getElementById("modal-image");
@@ -84,11 +91,13 @@ function renderGameCard(game) {
     const imgUrl = game.background_image || "https://via.placeholder.com/600x400?text=No+Image";
     const date = game.released ? new Date(game.released).getFullYear() : "N/A";
     const isFav = favorites.find(f => f.id === game.id);
+    const isCompare = compareList.find(c => c.id === game.id);
 
     card.innerHTML = `
         <div class="game-card-img-container">
             <img src="${imgUrl}" alt="${game.name}" class="poster" loading="lazy">
             <div class="card-actions">
+                <button class="icon-btn compare-btn-grid ${isCompare ? 'active' : ''}" data-id="${game.id}">⇄</button>
                 <button class="icon-btn fav ${isFav ? 'active' : ''}" data-id="${game.id}">★</button>
             </div>
         </div>
@@ -111,6 +120,12 @@ function renderGameCard(game) {
         e.stopPropagation();
         toggleFavorite(game);
         favBtn.classList.toggle("active");
+    });
+    
+    const compBtn = card.querySelector(".compare-btn-grid");
+    compBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleCompare(game);
     });
     
     gameGrid.appendChild(card);
@@ -197,12 +212,100 @@ function renderFavorites() {
 function updateGridButtons() {
     document.querySelectorAll(".game-card").forEach(card => {
         const favBtn = card.querySelector(".fav");
-        if (!favBtn) return;
-        const id = parseInt(favBtn.dataset.id);
-        const isFav = favorites.find(f => f.id === id);
-        favBtn.classList.toggle("active", Boolean(isFav));
+        if (favBtn) {
+            const id = parseInt(favBtn.dataset.id);
+            const isFav = favorites.find(f => f.id === id);
+            favBtn.classList.toggle("active", Boolean(isFav));
+        }
+        
+        const compBtn = card.querySelector(".compare-btn-grid");
+        if (compBtn) {
+            const id = parseInt(compBtn.dataset.id);
+            const isComp = compareList.find(c => c.id === id);
+            compBtn.classList.toggle("active", Boolean(isComp));
+        }
     });
 }
+
+function toggleCompare(game) {
+    const idx = compareList.findIndex(g => g.id === game.id);
+    if (idx > -1) {
+        compareList.splice(idx, 1);
+    } else if (compareList.length < 2) {
+        compareList.push(game);
+    } else {
+        alert("You can only compare 2 games at once!");
+    }
+    renderCompareDock();
+    updateGridButtons();
+}
+
+function renderCompareDock() {
+    compareSlots.innerHTML = "";
+    
+    for (let i = 0; i < 2; i++) {
+        const slot = document.createElement("div");
+        if (compareList[i]) {
+            slot.className = "compare-slot filled";
+            slot.innerHTML = `
+                <span>${compareList[i].name}</span>
+                <button class="remove-compare-btn" data-id="${compareList[i].id}">&times;</button>
+            `;
+            slot.querySelector(".remove-compare-btn").addEventListener("click", () => {
+                toggleCompare(compareList[i]);
+            });
+        } else {
+            slot.className = "compare-slot";
+            slot.innerHTML = "<span>Empty Slot</span>";
+        }
+        compareSlots.appendChild(slot);
+    }
+
+    const hasTwo = compareList.length === 2;
+    compareBtn.disabled = !hasTwo;
+    
+    if (compareList.length > 0) {
+        compareBtn.classList.remove("hidden");
+        clearCompareBtn.classList.remove("hidden");
+        document.querySelector(".empty-msg").classList.add("hidden");
+    } else {
+        compareBtn.classList.add("hidden");
+        clearCompareBtn.classList.add("hidden");
+        document.querySelector(".empty-msg").classList.remove("hidden");
+    }
+}
+
+clearCompareBtn.addEventListener("click", () => {
+    compareList = [];
+    renderCompareDock();
+    updateGridButtons();
+});
+
+compareBtn.addEventListener("click", () => {
+    if (compareList.length !== 2) return;
+    
+    compareResults.innerHTML = compareList.map(game => {
+        const date = game.released ? new Date(game.released).getFullYear() : "N/A";
+        return `
+            <div class="compare-card">
+                <img src="${game.background_image || 'https://via.placeholder.com/150'}" alt="${game.name}">
+                <h3>${game.name}</h3>
+                <div class="compare-stat">
+                    <span>Rating</span>
+                    <strong>⭐ ${game.rating || 'N/A'}</strong>
+                </div>
+                <div class="compare-stat">
+                    <span>Release Year</span>
+                    <strong>${date}</strong>
+                </div>
+            </div>
+        `;
+    }).join(`<div class="vs-divider">VS</div>`);
+    
+    compareModal.classList.remove("hidden");
+});
+
+closeCompareModal.addEventListener("click", () => compareModal.classList.add("hidden"));
 
 const handleSearch = debounce((e) => {
     currentSearch = e.target.value;

@@ -24,6 +24,15 @@
                 <h2>Favorites</h2>
                 <div id="favorites-list" class="favorites-list"></div>
             </div>
+            <div class="sidebar-section">
+                <h2>Compare Mode</h2>
+                <div id="compare-dock" class="compare-dock">
+                    <p class="empty-msg">Select two games to compare</p>
+                    <div id="compare-slots" class="compare-slots"></div>
+                    <button id="compare-btn" class="btn hidden" disabled>Compare</button>
+                    <button id="clear-compare-btn" class="btn hidden">Clear</button>
+                </div>
+            </div>
         </aside>
 
         <main class="main-content">
@@ -56,6 +65,14 @@
                     <div id="modal-screenshots" class="screenshots-grid"></div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="compare-modal" class="modal-overlay hidden">
+        <div class="modal-content compare-content">
+            <button id="close-compare-modal" class="close-btn">&times;</button>
+            <h2>Compare Games</h2>
+            <div id="compare-results" class="compare-side-by-side"></div>
         </div>
     </div>
 

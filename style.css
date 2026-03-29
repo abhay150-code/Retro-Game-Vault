@@ -351,3 +351,134 @@ h1, h2, h3, h4, .neon-text {
 .screenshots-grid img:hover {
     transform: scale(1.05);
 }
+
+.compare-dock {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.compare-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.compare-slot {
+    height: 50px;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.compare-slot.filled {
+    border: 1px solid var(--accent-color);
+    background: rgba(0, 240, 255, 0.05);
+    color: var(--text-primary);
+    justify-content: space-between;
+}
+
+.remove-compare-btn {
+    background: none;
+    border: none;
+    color: #ff4757;
+    cursor: pointer;
+}
+
+.btn {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--accent-color);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.btn:hover:not(:disabled) {
+    box-shadow: var(--neon-shadow);
+    background: var(--accent-hover);
+}
+
+.btn:disabled {
+    background: var(--surface-hover);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+}
+
+.empty-msg {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.compare-content {
+    max-width: 1000px;
+    padding: 2rem;
+}
+
+.compare-content h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--accent-color);
+}
+
+.compare-side-by-side {
+    display: flex;
+    gap: 2rem;
+}
+
+.compare-card {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    text-align: center;
+}
+
+.compare-card img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid var(--accent-color);
+}
+
+.compare-stat {
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.compare-stat span {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+}
+
+.compare-stat strong {
+    font-size: 1.1rem;
+    color: var(--accent-color);
+}
+
+.vs-divider {
+    display: flex;
+    align-items: center;
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
