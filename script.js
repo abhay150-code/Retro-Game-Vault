@@ -2,6 +2,7 @@ const API_KEY = "657a6ddfe7f74d1e97d443c883c67e9e";
 const BASE_URL = "https://api.rawg.io/api/games";
 
 let currentSearch = "";
+let currentPlatform = "";
 let currentPage = 1;
 let isLoading = false;
 let hasMore = true;
@@ -33,6 +34,7 @@ const modalGenres = document.getElementById("modal-genres");
 const modalDescription = document.getElementById("modal-description");
 const modalScreenshots = document.getElementById("modal-screenshots");
 const modalFavBtn = document.getElementById("modal-favorite-btn");
+const platformFilter = document.getElementById("platform-filter");
 
 function debounce(func, delay) {
     let timeout;
@@ -61,6 +63,7 @@ async function fetchGames(reset = false) {
     try {
         let url = `${BASE_URL}?key=${API_KEY}&page=${currentPage}&page_size=20`;
         if (currentSearch) url += `&search=${encodeURIComponent(currentSearch)}`;
+        if (currentPlatform) url += `&parent_platforms=${currentPlatform}`;
 
         const response = await fetch(url);
         const data = await response.json();
@@ -313,6 +316,11 @@ const handleSearch = debounce((e) => {
 }, 500);
 
 searchInput.addEventListener("input", handleSearch);
+
+platformFilter.addEventListener("change", (e) => {
+    currentPlatform = e.target.value;
+    fetchGames(true);
+});
 
 const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
