@@ -3,6 +3,7 @@ const BASE_URL = "https://api.rawg.io/api/games";
 
 let currentSearch = "";
 let currentPlatform = "";
+let currentSort = "-rating";
 let currentPage = 1;
 let isLoading = false;
 let hasMore = true;
@@ -35,6 +36,7 @@ const modalDescription = document.getElementById("modal-description");
 const modalScreenshots = document.getElementById("modal-screenshots");
 const modalFavBtn = document.getElementById("modal-favorite-btn");
 const platformFilter = document.getElementById("platform-filter");
+const sortSelect = document.getElementById("sort-select");
 
 function debounce(func, delay) {
     let timeout;
@@ -64,6 +66,7 @@ async function fetchGames(reset = false) {
         let url = `${BASE_URL}?key=${API_KEY}&page=${currentPage}&page_size=20`;
         if (currentSearch) url += `&search=${encodeURIComponent(currentSearch)}`;
         if (currentPlatform) url += `&parent_platforms=${currentPlatform}`;
+        if (currentSort) url += `&ordering=${currentSort}`;
 
         const response = await fetch(url);
         const data = await response.json();
@@ -319,6 +322,11 @@ searchInput.addEventListener("input", handleSearch);
 
 platformFilter.addEventListener("change", (e) => {
     currentPlatform = e.target.value;
+    fetchGames(true);
+});
+
+sortSelect.addEventListener("change", (e) => {
+    currentSort = e.target.value;
     fetchGames(true);
 });
 
