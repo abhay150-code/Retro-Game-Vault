@@ -55,6 +55,7 @@ async function fetchGames(reset = false) {
         gameGrid.innerHTML = "";
         gamesMap.clear();
         hasMore = true;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     if (currentPage === 1) {
