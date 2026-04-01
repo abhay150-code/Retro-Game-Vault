@@ -525,3 +525,46 @@ h1, h2, h3, h4, .neon-text {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--accent-color);
 }
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .compare-side-by-side {
+        flex-direction: column;
+    }
+    .vs-divider {
+        justify-content: center;
+        margin: 1rem 0;
+    }
+}
+
+@media (max-width: 900px) {
+    .app-layout {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+        padding: 1rem;
+    }
+    .filters-container {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    .search-container {
+        width: 100%;
+    }
+    .game-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+}
