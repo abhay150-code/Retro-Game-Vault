@@ -23,23 +23,12 @@ Retro Game Vault is a sleek, modern game discovery web application built complet
 
 ## 🚀 Local Setup
 
-1. **Clone the repository**:
+**Clone the repository**:
    ```bash
    git clone https://github.com/abhay150-code/Retro-Game-Vault.git
    cd Retro-Game-Vault
    ```
-2. **Launch a Local Server**:
-   To prevent CORS issues with the API, run a simple local server.
-   *(Python 3)*
-   ```bash
-   python3 -m http.server 8000
-   ```
-   *(Node.js)*
-   ```bash
-   npx serve .
-   ```
-3. **Open the browser**:
-   Navigate to `http://localhost:8000`
+
 
 ## 💡 Architecture Decisions
 
