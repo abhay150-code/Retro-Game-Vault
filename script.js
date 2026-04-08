@@ -38,6 +38,24 @@ const modalFavBtn = document.getElementById("modal-favorite-btn");
 const platformFilter = document.getElementById("platform-filter");
 const sortSelect = document.getElementById("sort-select");
 
+// Theme Toggle Logic
+const themeToggle = document.getElementById("theme-toggle");
+const themeIcon = themeToggle.querySelector(".theme-icon");
+
+// Load saved theme
+const savedTheme = localStorage.getItem("retro_vault_theme");
+if (savedTheme === "light") {
+    document.body.classList.add("light-theme");
+    themeIcon.textContent = "☀️";
+}
+
+themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("light-theme");
+    const isLight = document.body.classList.contains("light-theme");
+    localStorage.setItem("retro_vault_theme", isLight ? "light" : "dark");
+    themeIcon.textContent = isLight ? "☀️" : "🌙";
+});
+
 function debounce(func, delay) {
     let timeout;
     return (...args) => {
